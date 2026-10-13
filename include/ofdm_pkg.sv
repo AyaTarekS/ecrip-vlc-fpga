@@ -4,5 +4,5 @@ package ofdm_pkg;
     parameter int IFFT_BINS = 64;
     parameter int FRAME = SYMBOL_WIDTH * IFFT_BINS;
     parameter int CYCLIC_PREFIX = 8;
-    typedef logic [SYMBOL_WIDTH-1:0] symbol_t;
+    typedef logic signed [SYMBOL_WIDTH-1:0] symbol_t;
 endpackage
