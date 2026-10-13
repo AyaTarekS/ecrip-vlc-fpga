@@ -1,0 +1,1 @@
+../tb/bit_to_symbol_tb.sv

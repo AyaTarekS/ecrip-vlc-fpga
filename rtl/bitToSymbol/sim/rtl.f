@@ -1,0 +1,1 @@
+-F ../rtl/bit_to_symbol.sv
