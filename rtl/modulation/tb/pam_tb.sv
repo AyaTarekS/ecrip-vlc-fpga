@@ -52,14 +52,16 @@ module pam_tb ();
             @(posedge clk);
             bits_in =  arr[i];
             valid = 1'b1;
-            @(posedge clk);
+            repeat(2)@(posedge clk);
             if(data.ready)
-                queue.push_back(data.pam_symbol , data.ready);
+                queue.push_back('{data.pam_symbol , data.ready});
             else 
-                queue.push_back('0,'0);
+                queue.push_back('{'0,'0});
+            valid = 1'b0;
         end  
     endtask
-    task golden_model(input logic [MODULATION_BITS-1:0] in, output symbol_t golden_symbol);
+    function symbol_t golden_model(input logic [MODULATION_BITS-1:0] in);
+        symbol_t golden_data;
         case(in)
             3'd0: golden_data = -4'sd7;
             3'd1: golden_data = -4'sd5;
@@ -69,12 +71,14 @@ module pam_tb ();
             3'd7: golden_data = 4'sd3;
             3'd5: golden_data = 4'sd5;
             3'd4: golden_data = 4'sd7;
-    endtask
+        endcase
+        return(golden_data);
+    endfunction
     task compare_data ();
         symbol_t golden_data;
         symbol_t data_out;
         for(int i = 0; i < queue.size() ; i++)begin
-            golden_model(arr[i], golden_data);
+            golden_data = golden_model(arr[i]);
             if(golden_data===queue[i].pam_symbol && queue[i].ready == 1'b1)
                 correct_data++;
             else begin
