@@ -16,7 +16,7 @@ module bit_to_symbol_tb();
     data_t data_out;
     data_t queue[$];
     logic [MODULATION_BITS-1:0] arr [16] ='{
-       3'b000,3'b111,3'b101,3'b010,
+       3'b101,3'b111,3'b000,3'b010,
        3'b110,3'b011,3'b001,3'b100,
        3'b000,3'b111,3'b101,3'b010,
        3'b110,3'b011,3'b001,3'b100
@@ -29,7 +29,7 @@ module bit_to_symbol_tb();
     end
 
     //module instantiation 
-    bit_to_symbol(.clk(clk),.rst_n(rst_n),
+    bit_to_symbol bit_to_symbol_1(.clk(clk),.rst_n(rst_n),
     .bit_in(bit_in),.valid_bit(valid_bit),.symbol_out(data_out.symbol_out),
     .ready(data_out.ready));
 
@@ -39,6 +39,7 @@ module bit_to_symbol_tb();
         generate_data();
         @(posedge clk);
         compare_data();
+        $finish();
 
     end
 
@@ -48,27 +49,29 @@ module bit_to_symbol_tb();
         rst_n = 1'b0;
         repeat(3) @(posedge clk);
         rst_n = 1;
-        count = '0;
-        index = 0;
         @(posedge clk);
     endtask
     task generate_data();
         //16 case
-
+        data_out.count = '0;
+        data_out.index = '0;
         for(int i = 0; i < 16 ; i++)begin
             for(int j = 0 ; j < 3 ;  j++)begin
                 @(posedge clk);
                 valid_bit = 1'b1;
                 bit_in = arr[i][j];
-                data_out.count++;
+                data_out.count = j;
                 data_out.index = i;
                 @(posedge clk);
+                valid_bit = 1'b0;
+
             end
-            @(posedge clk)
+            @(posedge clk);
             if(data_out.ready)begin
                 queue.push_back(data_out);
             end
             else queue.push_back('{'0,'0,'0,'0});
+            @(posedge clk);
         end
     endtask
     task compare_data();
@@ -77,15 +80,15 @@ module bit_to_symbol_tb();
         for(int k = 0; k < queue.size() ; k++)begin
             golden_data.symbol_out = arr[k];
             data = queue[k];
-            if(golden_data.symbol_out === data.symbol_out && data.count == 2'd3 && data.ready == 1'b1)
+            if(golden_data.symbol_out === data.symbol_out && data.count == 2'd2 && data.ready == 1'b1)
                 correct_data++;
             else begin
                 error_data++;
-                $display("the error in index : %0b, the data output is :%0b, the count is :%0b and the ready is: %0b",k, data.symbol_out, data.count, data.ready);
+                $display("the error in index : %0d, the data output is :%0b, the count is :%0b and the ready is: %0b",k, data.symbol_out, data.count, data.ready);
             end
         end
-        $display("the output of the system -> correct items: %0d");
-        $display("the output of the system -> error items  : %0d");
+        $display("the output of the system -> correct items: %0d", correct_data);
+        $display("the output of the system -> error items  : %0d", error_data);
 
     endtask
 endmodule
