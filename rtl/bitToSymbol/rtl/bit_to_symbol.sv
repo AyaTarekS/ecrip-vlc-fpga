@@ -11,6 +11,7 @@ module bit_to_symbol(
     localparam COUNT_BITS = $clog2(MODULATION_BITS+1);
 
     reg [COUNT_BITS-1:0] count = '0;
+
     always_ff @(posedge clk or negedge rst_n)begin
         if(~rst_n)begin
             symbol_out <= '0;
@@ -19,9 +20,11 @@ module bit_to_symbol(
         end
         else begin 
             if(valid_bit)begin
-                count <= count + 1;
+                if(count < 2) count <= count + 1;
+                else count <= '0;
                 symbol_out <= {bit_in, symbol_out[MAX_BIT:1]};
-                ready <= (count == 2'd3)? 1'b1:1'b0;
+                ready <= (count == 2'd2)? 1'b1:1'b0;
+
             end
         end
     end
