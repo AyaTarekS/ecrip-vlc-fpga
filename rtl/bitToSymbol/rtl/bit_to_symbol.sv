@@ -4,7 +4,7 @@ module bit_to_symbol(
     input logic rst_n,
     input logic bit_in,
     input logic valid_bit,
-    output symbol_t symbol_out,
+    output logic [MODULATION_BITS-1:0] symbol_out,
     output logic ready
 );
     localparam MAX_BIT = MODULATION_BITS -1;
