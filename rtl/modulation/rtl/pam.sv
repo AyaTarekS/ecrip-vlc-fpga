@@ -15,13 +15,13 @@ module pam(
         end
         else begin
             if(valid)begin
-                case (bits_in)
+                case (bits_in) // Gray encoding
                     3'b000:  pam_symbol <= -4'sd7;
                     3'b001:  pam_symbol <= -4'sd5;
                     3'b011:  pam_symbol <= -4'sd3;
                     3'b010:  pam_symbol <= -4'sd1;
                     3'b110:  pam_symbol <= 4'sd1;
-                    3'b111:  pam_symbol <= 4'sd3;
+                    3'b111:  pasm_symbol <= 4'sd3;
                     3'b101:  pam_symbol <= 4'sd5;
                     3'b100:  pam_symbol <= 4'sd7;
                     default: pam_symbol <= '0;
