@@ -9,33 +9,45 @@ module ecrip(
     output logic ready
 );
 
-    localparam int INPUT_ADDR_BITS = $clog2(IFFT_OUTPUT_WIDTH);
-    localparam int OUTPUT_ADDR_BITS = $clog2(ECRIP_WIDTH);
+    comb_frame_t combined_frame_q;
+    comb_frame_t combined_frame_next;
     comb_frame_t temp;
+    logic ready_next, ready_q;
 
 
-    always_comb begin
-        temp = '0;
+    genvar n;
+    generate;
         for(n=0;n<IFFT_BINS;n++)begin : COMBINATION
-                temp[(n*FIXED_PR_IFFT) +: ECRIP_WIDTH] = real_frame[(n*FIXED_PR_IFFT) +: FIXED_PR_IFFT] + imaj_frame[(n*FIXED_PR_IFFT) +: FIXED_PR_IFFT];
-        end
-    end
+            adder frame_adder (.real_word(real_frame[(n*FIXED_PR_IFFT) +: FIXED_PR_IFFT]),.imaj_word(imaj_frame[(n*FIXED_PR_IFFT) +: FIXED_PR_IFFT]),.combined_word(temp[(n*ECRIP_WIDTH) +: ECRIP_WIDTH]));   
+        end  
+    endgenerate 
 
+    //current state logic 
     always_ff @( posedge clk or negedge rst_n ) begin
         if(~rst_n)begin
-            combined_frame <= '0;
-            ready <= '0;
+            combined_frame_q <= '0;
+            ready_q <= '0;
         end
         else begin
-            if(valid)begin
-                combined_frame <= temp;
-                ready <= 1'b1;
-            end
-            else begin
-                combined_frame <= '0;
-                ready <= '0;
-            end
+            combined_frame_q <= combined_frame_next;
+            ready_q <= '0;
         end
     end
+
+    //next state logic 
+    always_comb begin
+        combined_frame_next = '0;
+        if(valid)begin
+            combined_frame_next = temp;
+            ready_next <= 1'b1;
+        end
+        else begin
+            combined_frame_next <= '0;
+            ready_next <= '0;
+        end
+    end
+
+    assign combined_frame = combined_frame_q;
+    assign ready = ready_q;
 
 endmodule
