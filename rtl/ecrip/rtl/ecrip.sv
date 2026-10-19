@@ -18,7 +18,7 @@ module ecrip(
     genvar n;
     generate;
         for(n=0;n<IFFT_BINS;n++)begin : COMBINATION
-            adder frame_adder (.real_word(real_frame[(n*FIXED_PR_IFFT) +: FIXED_PR_IFFT]),.imaj_word(imaj_frame[(n*FIXED_PR_IFFT) +: FIXED_PR_IFFT]),.combined_word(temp[(n*FIXED_PR_IFFT_SUM) +: FIXED_PR_IFFT_SUM]));   
+            adder frame_adder (.a(real_frame[(n*FIXED_PR_IFFT) +: FIXED_PR_IFFT]),.b(imaj_frame[(n*FIXED_PR_IFFT) +: FIXED_PR_IFFT]),.sum(temp[(n*FIXED_PR_IFFT_SUM) +: FIXED_PR_IFFT_SUM]));   
         end  
     endgenerate 
 
