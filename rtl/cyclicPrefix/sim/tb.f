@@ -1,0 +1,1 @@
+../tb/pam_tb.sv
