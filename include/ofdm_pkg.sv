@@ -9,6 +9,7 @@ package ofdm_pkg;
     parameter int FIXED_PR_IFFT_SUM= FIXED_PR_IFFT +1;
      
     parameter int ECRIP_WIDTH = FIXED_PR_IFFT_SUM * IFFT_BINS;
+    parameter int CYCLIC_PREFIX_WIDTH = (CYCLIC_PREFIX + IFFT_BINS)*FIXED_PR_IFFT_SUM;
 
 
     typedef logic signed [SYMBOL_WIDTH-1:0] symbol_t;
@@ -17,4 +18,6 @@ package ofdm_pkg;
     typedef logic signed [FIXED_PR_IFFT-1:0] i_word_t;
     typedef logic signed [FIXED_PR_IFFT_SUM-1:0] combined_word_t;
     typedef logic signed [ECRIP_WIDTH-1:0] comb_frame_t; 
+    typedef logic signed [CYCLIC_PREFIX_WIDTH-1:0] cp_frame_t;
+    
 endpackage
