@@ -1,0 +1,1 @@
+../tb/ecrip_tb.sv
