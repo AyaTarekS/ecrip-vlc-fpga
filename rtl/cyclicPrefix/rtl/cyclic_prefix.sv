@@ -35,4 +35,7 @@ module cyclic_prefix(
             ready_next = '0;
         end
     end
+
+    assign cp_frame = cp_frame_q;
+    assign ready = ready_q;
 endmodule
