@@ -1,1 +1,1 @@
-../rtl/ecrip.sv
+../rtl/dc_gain.sv
